@@ -79,7 +79,7 @@ public class Persona
         this.apyn = apyn.trim();
     }
     
-    public Calendar getFechaNac() {
+    public MiCalendar getFechaNac() {
         return fechaNac;
     }
 

@@ -5,6 +5,7 @@
  */
 package abmAumno;
 
+import dao.AlumnoDAOBD;
 import dao.AlumnoDAOTxt;
 import dao.DAOException;
 import java.awt.HeadlessException;
@@ -29,6 +30,7 @@ public class ABM extends javax.swing.JFrame {
 
     private File archivoAbierto;
     private boolean nuevo;
+    private AlumnoDAOBD daoSQL;
 
     /**
      * Creates new form ABM
@@ -247,7 +249,7 @@ public class ABM extends javax.swing.JFrame {
                             .addComponent(abrirButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(nuevoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(mostrarComboBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(mostrarComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(15, 15, 15))
         );
         layout.setVerticalGroup(
@@ -262,6 +264,7 @@ public class ABM extends javax.swing.JFrame {
                             .addComponent(archivoTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(seleccionarArchivoButton)))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(mostrarComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -326,27 +329,17 @@ public class ABM extends javax.swing.JFrame {
     }//GEN-LAST:event_nuevoButtonActionPerformed
 
     private void seleccionarArchivoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seleccionarArchivoButtonActionPerformed
-        JFileChooser fileChooser = new JFileChooser();
 
-        int resp = fileChooser.showOpenDialog(this);
+        Object[] options = {"MySQL", "TXT"};
+        int opt = JOptionPane.showOptionDialog(this, "Que tipo de base de datos desea usar?", "Tipo de Base de datos", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
 
-        if (resp != JFileChooser.APPROVE_OPTION) {
-            return;
+        if (opt == JOptionPane.YES_OPTION) {
+            openMySQL();
+        }else{
+            openTXT();
         }
 
-        archivoAbierto = fileChooser.getSelectedFile();
-
-        try {
-            dao = new AlumnoDAOTxt(archivoAbierto);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(ABM.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        setEstadoInicial();
-        archivoTextField.setText(archivoAbierto.getAbsolutePath());
-
-        actualizarLista();
-        mostrarComboBox.setSelectedIndex(0);
+        
     }//GEN-LAST:event_seleccionarArchivoButtonActionPerformed
 
 
@@ -487,7 +480,7 @@ public class ABM extends javax.swing.JFrame {
 
         alu.setApyn(apynTextField.getText());
 
-         if (((String) sexoComboBox.getSelectedItem()).charAt(0) == '-') {
+        if (((String) sexoComboBox.getSelectedItem()).charAt(0) == '-') {
             throw new FormularioException("El sexo es invalido");
         } else {
             alu.setSexo(((String) sexoComboBox.getSelectedItem()).charAt(0));
@@ -506,10 +499,10 @@ public class ABM extends javax.swing.JFrame {
         } catch (NumberFormatException e) {
             throw new FormularioException("El promedio es inválido");//Juan
         }
-        
+
         alu.setFechaIngr(new MiCalendar(fechaIngrDateChooser.getCalendar()));
 
-         if (((String) estadoComboBox.getSelectedItem()).charAt(0) == '-') {
+        if (((String) estadoComboBox.getSelectedItem()).charAt(0) == '-') {
             throw new FormularioException("El estado es invalido");
         } else {
             alu.setEstado(((String) estadoComboBox.getSelectedItem()).charAt(0));
@@ -557,8 +550,8 @@ public class ABM extends javax.swing.JFrame {
         fechaNacDateChooser.setDate(null);
         fechaIngrDateChooser.setDate(null);
         estadoComboBox.setSelectedIndex(2);
-        
-        nuevo=false;
+
+        nuevo = false;
     }
 
     private void setEstadoDefault() {
@@ -582,7 +575,7 @@ public class ABM extends javax.swing.JFrame {
         mostrarComboBox.setEnabled(false);
         estadoComboBox.setSelectedIndex(2);
         sexoComboBox.setSelectedIndex(0);
-        
+
     }
 
     private void setEstadoNuevo() {
@@ -754,5 +747,39 @@ public class ABM extends javax.swing.JFrame {
         } else {
             estadoComboBox.setSelectedIndex(1);
         }
+    }
+
+    private void openMySQL() {
+        daoSQL = new AlumnoDAOBD();
+        
+        setEstadoInicial();
+        archivoTextField.setText("MySQL");
+
+        actualizarLista();
+        mostrarComboBox.setSelectedIndex(0);
+    }
+
+    private void openTXT() {
+        JFileChooser fileChooser = new JFileChooser();
+
+        int resp = fileChooser.showOpenDialog(this);
+
+        if (resp != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        archivoAbierto = fileChooser.getSelectedFile();
+
+        try {
+            dao = new AlumnoDAOTxt(archivoAbierto);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ABM.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        setEstadoInicial();
+        archivoTextField.setText(archivoAbierto.getAbsolutePath());
+
+        actualizarLista();
+        mostrarComboBox.setSelectedIndex(0);
     }
 }

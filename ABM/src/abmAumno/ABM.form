@@ -98,7 +98,7 @@
                           <Component id="abrirButton" alignment="1" max="32767" attributes="0"/>
                           <Component id="nuevoButton" alignment="1" max="32767" attributes="0"/>
                           <Component id="jLabel11" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="mostrarComboBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="mostrarComboBox" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -120,6 +120,7 @@
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                       <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="mostrarComboBox" min="-2" max="-2" attributes="0"/>
